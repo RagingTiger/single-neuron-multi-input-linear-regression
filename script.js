@@ -21,7 +21,8 @@ if (status) {
 }
 
 // An array of house sizes (first input feature).
-const HOUSE_SIZES = [720, 863, 674, 600, 760, 982, 1300, 1073, 1185, 1222, 1060, 1575, 1440, 1787, 1551, 1653, 1575, 1750];
+//const HOUSE_SIZES = [720, 863, 674, 600, 760, 982, 1300, 1073, 1185, 1222, 1060, 1575, 1440, 1787, 1551, 1653, 1575, 1750];
+const HOUSE_SIZES = [1,2,3,4,5,6,7,8,];
 
 // An array of house bedrooms (second input feature).
 const HOUSE_BEDROOMS = [1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3];
@@ -98,12 +99,14 @@ const model = tf.sequential();
 // 2 input feaature values (representing house size and number of rooms)
 model.add(tf.layers.dense({inputShape: [2], units: 1}));
 
-// Choose a learning rate that is suitable for the data we are using.
-const LEARNING_RATE = 0.003;
+model.summary();
 
 train();
 
 async function train() {
+  // Choose a learning rate that is suitable for the data we are using.
+  const LEARNING_RATE = 0.005;
+  
   // Compile the model with the defined learning rate and specify
   // our loss function to use.
   model.compile({
@@ -117,18 +120,17 @@ async function train() {
   // and learn from it.
   let results = await model.fit(NORMALIZED_INPUT_FEATURES_COMBINED, HOUSE_PRICES_TENSOR, {
     epochs: 200,
-    //validationSplit: 0.15, // TODO - define test/val/train split.
+    validationSplit: 0.1, // TODO - define test/val/train split.
     batchSize: 1, 
     shuffle: true
   });
   
-  console.log("Average error: " + Math.sqrt(results.history.loss[results.history.loss.length - 1]));
+  console.log("Average error loss: " + Math.sqrt(results.history.loss[results.history.loss.length - 1]));
+  console.log("Average validation error loss: " + Math.sqrt(results.history.val_loss[results.history.val_loss.length - 1]));
   
   NORMALIZED_INPUT_FEATURES_COMBINED.dispose();
   HOUSE_PRICES_TENSOR.dispose();
-  
-  model.summary();
-  
+    
   // Once trained we can evaluate the model.
   evaluate();
 }
