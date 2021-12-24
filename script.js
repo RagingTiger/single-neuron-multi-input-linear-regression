@@ -74,21 +74,26 @@ HOUSE_SIZES_TENSOR_NORMALIZED.print();
 console.log('Normalized Bedroom Sizes:');
 HOUSE_BEDROOMS_TENSOR_NORMALIZED.print();
 
-// Finally merge the input feature tensors using the 2nd axisso you have 1 Tensor2D that contains
+// Finally merge all the input feature 2D tensors using their 2nd axis (Axis 1 as zero indexed).
+// This will combine the input features such that each item is an array of input features.
+// For example:
+// Feature 1 Tensor: [[1], [2]]
+// Feature 2 Tensor: [[3], [4]]
+// Returned Merged 2D Tensor: [[1,3], [2,4]]
 const AXIS = 1;
-const INPUTS = tf.concat([HOUSE_SIZES_TENSOR_NORMALIZED, HOUSE_BEDROOMS_TENSOR_NORMALIZED], AXIS);
-INPUTS.print();
+const NORMALIZED_INPUT_FEATURES_COMBINED = tf.concat([HOUSE_SIZES_TENSOR_NORMALIZED, HOUSE_BEDROOMS_TENSOR_NORMALIZED], AXIS);
+NORMALIZED_INPUT_FEATURES_COMBINED.print();
 
 
 // Now actually create and define model architecture.
 const model = tf.sequential();
 
-// We will use one dense layer with 1 neuron and an input of 
-// 2 values (representing house size and number of rooms)
+// We will use one dense layer with 1 neuron (units) and an input of 
+// 2 input feaature values (representing house size and number of rooms)
 model.add(tf.layers.dense({inputShape: [2], units: 1}));
 
 // Choose a learning rate that is suitable for the data we are using.
-const LEARNING_RATE = 0.0001;
+const LEARNING_RATE = 0.001;
 
 train();
 
@@ -104,7 +109,7 @@ async function train() {
   // As we have so little training data we use batch size of 1.
   // We also set for the data to be shuffled each time we try 
   // and learn from it.
-  let results = await model.fit(INPUTS, HOUSE_PRICES_TENSOR, {
+  let results = await model.fit(NORMALIZED_INPUT_FEATURES_COMBINED, HOUSE_PRICES_TENSOR, {
     epochs: 200,
     validationSplit: 0.15,
     batchSize: 1, 
