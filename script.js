@@ -39,13 +39,13 @@ const HOUSE_PRICES_TENSOR = tf.tensor1d(HOUSE_PRICES);
 
 // Function to take a Tensor and normalize values
 // based on all values contained in that Tensor.
-function normalize(tensor) {
+function normalize(tensor, min, max) {
   const result = tf.tidy(function() {
     // Find the minimum value contained in the Tensor.
-    const MIN_VALUE = tf.min(tensor);
+    const MIN_VALUE = min || tf.min(tensor);
 
     // Find the maximum value contained in the Tensor.
-    const MAX_VALUE = tf.max(tensor);
+    const MAX_VALUE = max || tf.max(tensor);
 
     // Now calculate subtract the MIN_VALUE from every value in the Tensor
     // And store the results in a new Tensor.
@@ -63,8 +63,13 @@ function normalize(tensor) {
 
 
 // Normalize all input feature arrays and then dispose of the original non normalized Tensors.
-const HOUSE_SIZES_TENSOR_NORMALIZED = normalize(HOUSE_SIZES_TENSOR);
+const HOUSE_SIZES_MIN = tf.min(HOUSE_SIZES_TENSOR);
+const HOUSE_SIZES_MAX = tf.max(HOUSE_SIZES_TENSOR);
+const HOUSE_SIZES_TENSOR_NORMALIZED = normalize(HOUSE_SIZES_TENSOR, HOUSE_SIZES_MIN, HOUSE_SIZES_MAX);
 HOUSE_SIZES_TENSOR.dispose();
+
+const HOUSE_BEDROOMS_MIN = tf.min(HOUSE_BEDROOMS_TENSOR);
+const HOUSE_BEDROOMS_MAX = tf.max(HOUSE_BEDROOMS_TENSOR);
 const HOUSE_BEDROOMS_TENSOR_NORMALIZED = normalize(HOUSE_BEDROOMS_TENSOR);
 HOUSE_BEDROOMS_TENSOR.dispose();
 
@@ -110,7 +115,7 @@ async function train() {
   // We also set for the data to be shuffled each time we try 
   // and learn from it.
   let results = await model.fit(NORMALIZED_INPUT_FEATURES_COMBINED, HOUSE_PRICES_TENSOR, {
-    epochs: 200,
+    epochs: 100,
     validationSplit: 0.15,
     batchSize: 1, 
     shuffle: true
@@ -122,5 +127,10 @@ async function train() {
 
 async function evaluate(stuff) {
   // Predict answer for a single piece of data.
-  model.predict(tf.tensor2d([[0.7, 0.5]])).print();
+ 
+  
+  const NEW_SIZE = 1000;
+  const NEW_BEDS = 2;
+  const NEW_HOUSE_TENSOR = tf.tensor2d([[NEW_SIZE, NEW_BEDS]]);
+  model.predict(normalize(NEW_HOUSE_TENSOR,)).print();
 }
