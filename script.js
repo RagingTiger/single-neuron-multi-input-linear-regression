@@ -87,6 +87,8 @@ HOUSE_BEDROOMS_TENSOR_NORMALIZED.print();
 // Returned Merged 2D Tensor: [[1,3], [2,4]]
 const AXIS = 1;
 const NORMALIZED_INPUT_FEATURES_COMBINED = tf.concat([HOUSE_SIZES_TENSOR_NORMALIZED, HOUSE_BEDROOMS_TENSOR_NORMALIZED], AXIS);
+HOUSE_SIZES_TENSOR_NORMALIZED.dispose();
+HOUSE_BEDROOMS_TENSOR_NORMALIZED.dispose();
 NORMALIZED_INPUT_FEATURES_COMBINED.print();
 
 
@@ -121,13 +123,18 @@ async function train() {
     shuffle: true
   });
   
+  NORMALIZED_INPUT_FEATURES_COMBINED.dispose();
+  HOUSE_PRICES_TENSOR.dispose();
+  
+  model.summary();
+  
   // Once trained we can evaluate the model.
   evaluate();
 }
 
 async function evaluate(stuff) {
-  // Predict answer for a single piece of data.
-  const INPUTS = tf.tidy(function() {
+    // Predict answer for a single piece of data.
+const INPUTS = tf.tidy(function() {
     const NEW_SIZE = tf.tensor2d([[1000]]);
     const NEW_BEDROOMS = tf.tensor2d([[2]]);
 
@@ -137,6 +144,11 @@ async function evaluate(stuff) {
     return NEW_HOUSE_INPUT_TENSOR = tf.concat([NEW_SIZE_NORMALIZED, NEW_BEDROOMS_NORMALIZED], 1);
   });
 
-  model.predict(INPUTS).print();
+  let output = model.predict(INPUTS);
+  INPUTS.dispose();
+  output.print();
+  output.dispose();
+  
+  // Should show 7 Tensors 
   console.log(tf.memory().numTensors);
 }
