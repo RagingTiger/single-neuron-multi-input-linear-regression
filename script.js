@@ -152,6 +152,6 @@ function evaluate() {
   
   // Should show 7 Tensors left in memory incase you want to perform more predictions.
   // 4 Tensors store the min/max values for each of the 2 input features which you will need to normalize new inputs.
-  // 2 Tensors make up the model itself that was trained (2 input weights and 1 bias value)
+  // 2 Tensors make up the model itself that was trained.
   console.log(tf.memory().numTensors);
 }
