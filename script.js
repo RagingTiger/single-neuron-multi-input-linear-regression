@@ -21,8 +21,7 @@ if (status) {
 }
 
 // An array of house sizes (first input feature).
-//const HOUSE_SIZES = [720, 863, 674, 600, 760, 982, 1300, 1073, 1185, 1222, 1060, 1575, 1440, 1787, 1551, 1653, 1575, 1750];
-const HOUSE_SIZES = [1,2,3,4,5,6,7,8,];
+const HOUSE_SIZES = [720, 863, 674, 600, 760, 982, 1300, 1073, 1185, 1222, 1060, 1575, 1440, 1787, 1551, 1653, 1575, 1750];
 
 // An array of house bedrooms (second input feature).
 const HOUSE_BEDROOMS = [1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3];
@@ -119,8 +118,8 @@ async function train() {
   // We also set for the data to be shuffled each time we try 
   // and learn from it.
   let results = await model.fit(NORMALIZED_INPUT_FEATURES_COMBINED, HOUSE_PRICES_TENSOR, {
-    epochs: 200,
-    validationSplit: 0.1, // TODO - define test/val/train split.
+    epochs: 100,
+    validationSplit: 0.15, // TODO - define test/val/train split.
     batchSize: 1, 
     shuffle: true
   });
