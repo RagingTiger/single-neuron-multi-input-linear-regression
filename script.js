@@ -100,7 +100,7 @@ const model = tf.sequential();
 model.add(tf.layers.dense({inputShape: [2], units: 1}));
 
 // Choose a learning rate that is suitable for the data we are using.
-const LEARNING_RATE = 0.005;
+const LEARNING_RATE = 0.01;
 
 train();
 
