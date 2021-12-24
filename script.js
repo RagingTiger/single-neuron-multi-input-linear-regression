@@ -21,13 +21,13 @@ if (status) {
 }
 
 // An array of house sizes (first input feature).
-const HOUSE_SIZES = [720, 863, 674, 600, 760, 982, 1513, 1073, 1185, 1222, 1060, 1575, 1440, 1787, 1551, 1653, 1575, 2522];
+const HOUSE_SIZES = [720, 863, 674, 600, 760, 982, 1300, 1073, 1185, 1222, 1060, 1575, 1440, 1787, 1551, 1653, 1575, 1750];
 
 // An array of house bedrooms (second input feature).
 const HOUSE_BEDROOMS = [1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3];
 
 // Current listed house prices in dollars given their features above (target output values you want to predict).
-const HOUSE_PRICES = [971000, 875000, 620000, 590000, 710000, 849000, 1995000, 1199000, 1380000, 1398888, 1650000, 1498000, 1782000, 1987888, 1688000, 1850000, 1498000, 2600000];
+const HOUSE_PRICES = [751000, 875000, 650000, 590000, 710000, 950000, 1450000, 1199000, 1380000, 1398888, 1150000, 1498000, 1782000, 1987888, 1688000, 1850000, 1498000, 1900000];
 
 // Ingest 1D input feature arrays as 2D tensors so that you can combine them later.
 const HOUSE_SIZES_TENSOR = tf.tensor2d(HOUSE_SIZES, [HOUSE_SIZES.length, 1]);
@@ -35,7 +35,6 @@ const HOUSE_BEDROOMS_TENSOR = tf.tensor2d(HOUSE_BEDROOMS, [HOUSE_BEDROOMS.length
 
 // Output can stay 1 dimensional.
 const HOUSE_PRICES_TENSOR = tf.tensor1d(HOUSE_PRICES);
-
 
 // Function to take a Tensor and normalize values
 // based on all values contained in that Tensor.
@@ -149,8 +148,7 @@ function evaluate() {
   let output = model.predict(INPUTS);
   INPUTS.dispose();
   output.print();
-  output.dispose();
-  
+  output.dispose();  
   
   // Should show 7 Tensors left in memory incase you want to perform more predictions.
   // 4 Tensors store the min/max values for each of the 2 input features which you will need to normalize new inputs.
