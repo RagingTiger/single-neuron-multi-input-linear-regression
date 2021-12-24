@@ -71,7 +71,7 @@ console.log('Normalized Bedroom Sizes:');
 HOUSE_BEDROOMS_TENSOR_NORMALIZED.print();
 
 
-const INPUTS = tf.tensor2d([HOUSE_SIZES_TENSOR_NORMALIZED, HOUSE_BEDROOMS_TENSOR_NORMALIZED.]);
+const INPUTS = null;
 
 
 // Now actually create and define model architecture.
@@ -98,7 +98,7 @@ async function train() {
   // As we have so little training data we use batch size of 1.
   // We also set for the data to be shuffled each time we try 
   // and learn from it.
-  let results = await model.fit(INPUTS, HOUSE_PRICES_TENSOR, {
+  let results = await model.fit([HOUSE_SIZES_TENSOR_NORMALIZED, HOUSE_BEDROOMS_TENSOR_NORMALIZED], HOUSE_PRICES_TENSOR, {
     epochs: 200,
     validationSplit: 0.15,
     batchSize: 1, 
