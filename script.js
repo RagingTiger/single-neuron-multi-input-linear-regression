@@ -37,13 +37,25 @@ const HOUSE_PRICES_TENSOR = tf.tensor1d(HOUSE_PRICES);
 // Function to take a Tensor and normalize values
 // based on all values contained in that Tensor.
 function normalize(tensor) {
-  // Find the minimum value contained in the Tensor.
-  const MIN_VALUE = tf.min(tensor);
-  
-  // Now calcula
-  let offsetValue = tf.sub(tensor, MIN_VALUE);
-  let range = tf.sub(tf.max(tensor), tf.min(tensor));
-  return tf.div(offsetValue, range);
+  const result = tf.tidy(function() {
+    // Find the minimum value contained in the Tensor.
+    const MIN_VALUE = tf.min(tensor);
+
+    // Find the maximum value contained in the Tensor.
+    const MAX_VALUE = tf.max(tensor);
+
+    // Now calculate subtract the MIN_VALUE from every value in the Tensor
+    // And store the results in a new Tensor.
+    const TENSOR_SUBTRACT_MIN_VALUE = tf.sub(tensor, MIN_VALUE);
+
+    // Calculate the range size of possible values.
+    const RANGE_SIZE = tf.sub(MAX_VALUE, MIN_VALUE);
+
+    // Return the adjusted values divided by the range size as a new Tensor.
+    return tf.div(TENSOR_SUBTRACT_MIN_VALUE, RANGE_SIZE);
+  });
+
+  return result;
 }
 
 
@@ -53,6 +65,8 @@ console.log('Normalized House Sizes:');
 HOUSE_SIZES_TENSOR_NORMALIZED.print();
 console.log('Normalized Bedroom Sizes:');
 HOUSE_BEDROOMS_TENSOR_NORMALIZED.print();
+
+const INPUTS = tf.tensor2d([HOUSE_SIZES_TENSOR_NORMALIZED, HOUSE_BEDROOMS_TENSOR_NORMALIZED.]);
 
 
 // Now actually create and define model architecture.
@@ -79,7 +93,7 @@ async function train() {
   // As we have so little training data we use batch size of 1.
   // We also set for the data to be shuffled each time we try 
   // and learn from it.
-  let results = await model.fit(HOUSE_FEATURES_TENSOR_NORMALIZED, HOUSE_PRICES_TENSOR, {
+  let results = await model.fit(INPUTS, HOUSE_PRICES_TENSOR, {
     epochs: 200,
     validationSplit: 0.15,
     batchSize: 1, 
