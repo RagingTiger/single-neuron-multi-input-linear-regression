@@ -20,17 +20,20 @@ if (status) {
   status.innerText = 'Loaded TensorFlow.js - version: ' + tf.version.tfjs;
 }
 
-// An array of house sizes.
+// An array of house sizes (first input feature).
 const HOUSE_SIZES = [720, 863, 674, 600, 760, 982, 1513, 1073, 1185, 1222, 1060, 1575, 1440, 1787, 1551, 1653, 1575, 2522];
 
-// An array of house bedrooms.
+// An array of house bedrooms (second input feature).
 const HOUSE_BEDROOMS = [1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3];
 
-// Current listed house prices in dollars given their features above.
+// Current listed house prices in dollars given their features above (target output values you want to predict).
 const HOUSE_PRICES = [971000, 875000, 620000, 590000, 710000, 849000, 1995000, 1199000, 1380000, 1398888, 1650000, 1498000, 1782000, 1987888, 1688000, 1850000, 1498000, 5900000];
 
+// Ingest 1D input feature arrays as 2D tensors so that you can combine them later.
 const HOUSE_SIZES_TENSOR = tf.tensor2d(HOUSE_SIZES, [HOUSE_SIZES.length, 1]);
-const HOUSE_BEDROOMS_TENSOR = tf.tensor2d(HOUSE_BEDROOMS);
+const HOUSE_BEDROOMS_TENSOR = tf.tensor2d(HOUSE_BEDROOMS, [HOUSE_BEDROOMS.length, 1]);
+
+// Output can stay 1 dimensional.
 const HOUSE_PRICES_TENSOR = tf.tensor1d(HOUSE_PRICES);
 
 
@@ -59,23 +62,22 @@ function normalize(tensor) {
 }
 
 
+// Normalize all input feature arrays and then dispose of the original non normalized Tensors.
 const HOUSE_SIZES_TENSOR_NORMALIZED = normalize(HOUSE_SIZES_TENSOR);
 HOUSE_SIZES_TENSOR.dispose();
-
 const HOUSE_BEDROOMS_TENSOR_NORMALIZED = normalize(HOUSE_BEDROOMS_TENSOR);
 HOUSE_BEDROOMS_TENSOR.dispose();
 
+// Print normalized Tensors to console to view contents.
 console.log('Normalized House Sizes:');
 HOUSE_SIZES_TENSOR_NORMALIZED.print();
 console.log('Normalized Bedroom Sizes:');
 HOUSE_BEDROOMS_TENSOR_NORMALIZED.print();
 
-
-const input1 = tf.tensor2d(HOUSE_SIZES_TENSOR_NORMALIZED, [HOUSE_SIZES_TENSOR_NORMALIZED.length, 1]);
-const input2 = tf.tensor2d(HOUSE_BEDROOMS_TENSOR_NORMALIZED, [HOUSE_BEDROOMS_TENSOR_NORMALIZED.length, 1]);
-const axis = 1;
-
-const INPUTS = tf.concat([input1, input2], axis).print();
+// Finally merge the input feature tensors using the 2nd axisso you have 1 Tensor2D that contains
+const AXIS = 1;
+const INPUTS = tf.concat([HOUSE_SIZES_TENSOR_NORMALIZED, HOUSE_BEDROOMS_TENSOR_NORMALIZED], AXIS);
+INPUTS.print();
 
 
 // Now actually create and define model architecture.
@@ -102,7 +104,7 @@ async function train() {
   // As we have so little training data we use batch size of 1.
   // We also set for the data to be shuffled each time we try 
   // and learn from it.
-  let results = await model.fit([HOUSE_SIZES_TENSOR_NORMALIZED, HOUSE_BEDROOMS_TENSOR_NORMALIZED], HOUSE_PRICES_TENSOR, {
+  let results = await model.fit(INPUTS, HOUSE_PRICES_TENSOR, {
     epochs: 200,
     validationSplit: 0.15,
     batchSize: 1, 
@@ -115,5 +117,5 @@ async function train() {
 
 async function evaluate(stuff) {
   // Predict answer for a single piece of data.
-  model.predict(tf.tensor2d([[0.4, 0.5]])).print();
+  model.predict(tf.tensor2d([[0.7, 0.5]])).print();
 }
