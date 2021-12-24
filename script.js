@@ -82,6 +82,7 @@ model.summary();
 
 train();
 
+
 async function train() {
   // Choose a learning rate that is suitable for the data we are using.
   const LEARNING_RATE = 0.01;
@@ -113,6 +114,7 @@ async function train() {
   // Once trained we can evaluate the model.
   evaluate();
 }
+
 
 function evaluate() {
   // Predict answer for a single piece of data.
