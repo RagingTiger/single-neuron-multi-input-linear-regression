@@ -59,8 +59,6 @@ function normalize(tensor) {
 const HOUSE_FEATURES_TENSOR_NORMALIZED = normalize(HOUSE_FEATURES_TENSOR);
 HOUSE_FEATURES_TENSOR_NORMALIZED.print();
 
-const HOUSE_PRICES_TENSOR_NORMALIZED = normalize(HOUSE_PRICES_TENSOR);
-
 
 // Now actually create and define model architecture.
 const model = tf.sequential();
@@ -86,7 +84,7 @@ async function train() {
   // As we have so little training data we use batch size of 1.
   // We also set for the data to be shuffled each time we try 
   // and learn from it.
-  let results = await model.fit(HOUSE_FEATURES_TENSOR_NORMALIZED, HOUSE_PRICES_TENSOR_NORMALIZED, {
+  let results = await model.fit(HOUSE_FEATURES_TENSOR_NORMALIZED, HOUSE_PRICES_TENSOR, {
     epochs: 200,
     validationSplit: 0.15,
     batchSize: 1, 
@@ -99,5 +97,5 @@ async function train() {
 
 async function evaluate(stuff) {
   // Predict answer for a single piece of data.
-  model.predict(tf.tensor2d([[768, 2]])).print();
+  model.predict(tf.tensor2d([[0.4, 0.5]])).print();
 }
