@@ -98,10 +98,8 @@ const model = tf.sequential();
 // 2 input feaature values (representing house size and number of rooms)
 model.add(tf.layers.dense({inputShape: [2], units: 1}));
 
-
-
 // Choose a learning rate that is suitable for the data we are using.
-const LEARNING_RATE = 0.001;
+const LEARNING_RATE = 0.003;
 
 train();
 
@@ -124,7 +122,7 @@ async function train() {
     shuffle: true
   });
   
-  console.log(results);
+  console.log("Average error: " + Math.sqrt(results.history.loss[results.history.loss.length - 1]));
   
   NORMALIZED_INPUT_FEATURES_COMBINED.dispose();
   HOUSE_PRICES_TENSOR.dispose();
