@@ -27,7 +27,7 @@ const HOUSE_SIZES = [720, 863, 674, 600, 760, 982, 1513, 1073, 1185, 1222, 1060,
 const HOUSE_BEDROOMS = [1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3];
 
 // Current listed house prices in dollars given their features above (target output values you want to predict).
-const HOUSE_PRICES = [971000, 875000, 620000, 590000, 710000, 849000, 1995000, 1199000, 1380000, 1398888, 1650000, 1498000, 1782000, 1987888, 1688000, 1850000, 1498000, 5900000];
+const HOUSE_PRICES = [971000, 875000, 620000, 590000, 710000, 849000, 1995000, 1199000, 1380000, 1398888, 1650000, 1498000, 1782000, 1987888, 1688000, 1850000, 1498000, 2600000];
 
 // Ingest 1D input feature arrays as 2D tensors so that you can combine them later.
 const HOUSE_SIZES_TENSOR = tf.tensor2d(HOUSE_SIZES, [HOUSE_SIZES.length, 1]);
@@ -73,12 +73,6 @@ const HOUSE_BEDROOMS_MAX = tf.max(HOUSE_BEDROOMS_TENSOR);
 const HOUSE_BEDROOMS_TENSOR_NORMALIZED = normalize(HOUSE_BEDROOMS_TENSOR);
 HOUSE_BEDROOMS_TENSOR.dispose();
 
-
-const HOUSE_PRICES_MIN = tf.min(HOUSE_PRICES_TENSOR);
-const HOUSE_PRICES_MAX = tf.max(HOUSE_PRICES_TENSOR);
-const HOUSE_PRICES_TENSOR_NORMALIZED = normalize(HOUSE_PRICES_TENSOR, HOUSE_PRICES_MIN, HOUSE_PRICES_MAX);
-HOUSE_PRICES_TENSOR.dispose();
-
 // Print normalized Tensors to console to view contents.
 console.log('Normalized House Sizes:');
 HOUSE_SIZES_TENSOR_NORMALIZED.print();
@@ -106,7 +100,7 @@ const model = tf.sequential();
 model.add(tf.layers.dense({inputShape: [2], units: 1}));
 
 // Choose a learning rate that is suitable for the data we are using.
-const LEARNING_RATE = 0.001;
+const LEARNING_RATE = 0.005;
 
 train();
 
@@ -122,8 +116,8 @@ async function train() {
   // As we have so little training data we use batch size of 1.
   // We also set for the data to be shuffled each time we try 
   // and learn from it.
-  let results = await model.fit(NORMALIZED_INPUT_FEATURES_COMBINED, HOUSE_PRICES_TENSOR_NORMALIZED, {
-    epochs: 100,
+  let results = await model.fit(NORMALIZED_INPUT_FEATURES_COMBINED, HOUSE_PRICES_TENSOR, {
+    epochs: 200,
     //validationSplit: 0.15, // TODO - define test/val/train split.
     batchSize: 1, 
     shuffle: true
@@ -153,15 +147,6 @@ function evaluate() {
   });
 
   let output = model.predict(INPUTS);
-  
-  let range = HOUSE_PRICES_MAX.sub(HOUSE_PRICES_MIN);
-
-  let newOutput = output.mul(range);
-  
-  let finalOut = newOutput.add(HOUSE_PRICES_MIN);
-  
-  finalOut.print();
-  
   INPUTS.dispose();
   output.print();
   output.dispose();
@@ -169,6 +154,6 @@ function evaluate() {
   
   // Should show 7 Tensors left in memory incase you want to perform more predictions.
   // 4 Tensors store the min/max values for each of the 2 input features which you will need to normalize new inputs.
-  // 2 Tensors make up the model itself that was trained.
+  // 3 Tensors make up the model itself that was trained.
   console.log(tf.memory().numTensors);
 }
