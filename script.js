@@ -73,6 +73,12 @@ const HOUSE_BEDROOMS_MAX = tf.max(HOUSE_BEDROOMS_TENSOR);
 const HOUSE_BEDROOMS_TENSOR_NORMALIZED = normalize(HOUSE_BEDROOMS_TENSOR);
 HOUSE_BEDROOMS_TENSOR.dispose();
 
+
+const HOUSE_PRICES_MIN = tf.min(HOUSE_PRICES_TENSOR);
+const HOUSE_PRICES_MAX = tf.max(HOUSE_PRICES_TENSOR);
+const HOUSE_PRICES_TENSOR_NORMALIZED = normalize(HOUSE_PRICES_TENSOR, HOUSE_PRICES_MIN, HOUSE_PRICES_MAX);
+HOUSE_PRICES_TENSOR.dispose();
+
 // Print normalized Tensors to console to view contents.
 console.log('Normalized House Sizes:');
 HOUSE_SIZES_TENSOR_NORMALIZED.print();
@@ -116,9 +122,9 @@ async function train() {
   // As we have so little training data we use batch size of 1.
   // We also set for the data to be shuffled each time we try 
   // and learn from it.
-  let results = await model.fit(NORMALIZED_INPUT_FEATURES_COMBINED, HOUSE_PRICES_TENSOR, {
+  let results = await model.fit(NORMALIZED_INPUT_FEATURES_COMBINED, HOUSE_PRICES_TENSOR_NORMALIZED, {
     epochs: 100,
-    validationSplit: 0.15, // TODO - define test/val/train split.
+    //validationSplit: 0.15, // TODO - define test/val/train split.
     batchSize: 1, 
     shuffle: true
   });
@@ -147,6 +153,7 @@ function evaluate() {
   });
 
   let output = model.predict(INPUTS);
+  output.mul(HOUSE_PRICES_MIN)
   INPUTS.dispose();
   output.print();
   output.dispose();
