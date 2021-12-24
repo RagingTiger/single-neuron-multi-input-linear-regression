@@ -20,44 +20,39 @@ if (status) {
   status.innerText = 'Loaded TensorFlow.js - version: ' + tf.version.tfjs;
 }
 
-// An array of input data
-const HOUSE_FEATURES = [
-  // Size, Bedrooms
-  [720, 1],
-  [863, 1],
-  [674, 1],
-  [600, 1],
-  [760, 1],
-  [982, 1],
-  [1513, 2],
-  [1073, 2],
-  [1185, 2],
-  [1222, 2],
-  [1060, 2],
-  [1575, 2],
-  [1440, 3],
-  [1787, 3],
-  [1551, 3],
-  [1653, 3],
-  [1575, 3],
-  [2522, 3]
-];
+// An array of house sizes.
+const HOUSE_SIZES = [720, 863, 674, 600, 760, 982, 1513, 1073, 1185, 1222, 1060, 1575, 1440, 1787, 1551, 1653, 1575, 2522];
 
+// An array of house bedrooms.
+const HOUSE_BEDROOMS = [1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3];
 
 // Current listed house prices in dollars given their features above.
 const HOUSE_PRICES = [971000, 875000, 620000, 590000, 710000, 849000, 1995000, 1199000, 1380000, 1398888, 1650000, 1498000, 1782000, 1987888, 1688000, 1850000, 1498000, 5900000];
 
-const HOUSE_FEATURES_TENSOR = tf.tensor2d(HOUSE_FEATURES);
+const HOUSE_SIZES_TENSOR = tf.tensor1d(HOUSE_SIZES);
+const HOUSE_BEDROOMS_TENSOR = tf.tensor1d(HOUSE_BEDROOMS);
 const HOUSE_PRICES_TENSOR = tf.tensor1d(HOUSE_PRICES);
 
+
+// Function to take a Tensor and normalize values
+// based on all values contained in that Tensor.
 function normalize(tensor) {
-  let offsetValue = tf.sub(tensor, tf.min(tensor));
+  // Find the minimum value contained in the Tensor.
+  const MIN_VALUE = tf.min(tensor);
+  
+  // Now calcula
+  let offsetValue = tf.sub(tensor, MIN_VALUE);
   let range = tf.sub(tf.max(tensor), tf.min(tensor));
   return tf.div(offsetValue, range);
 }
 
-const HOUSE_FEATURES_TENSOR_NORMALIZED = normalize(HOUSE_FEATURES_TENSOR);
-HOUSE_FEATURES_TENSOR_NORMALIZED.print();
+
+const HOUSE_SIZES_TENSOR_NORMALIZED = normalize(HOUSE_SIZES_TENSOR);
+const HOUSE_BEDROOMS_TENSOR_NORMALIZED = normalize(HOUSE_BEDROOMS_TENSOR);
+console.log('Normalized House Sizes:');
+HOUSE_SIZES_TENSOR_NORMALIZED.print();
+console.log('Normalized Bedroom Sizes:');
+HOUSE_BEDROOMS_TENSOR_NORMALIZED.print();
 
 
 // Now actually create and define model architecture.
