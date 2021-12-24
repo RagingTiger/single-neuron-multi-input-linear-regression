@@ -29,8 +29,8 @@ const HOUSE_BEDROOMS = [1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3];
 // Current listed house prices in dollars given their features above.
 const HOUSE_PRICES = [971000, 875000, 620000, 590000, 710000, 849000, 1995000, 1199000, 1380000, 1398888, 1650000, 1498000, 1782000, 1987888, 1688000, 1850000, 1498000, 5900000];
 
-const HOUSE_SIZES_TENSOR = tf.tensor1d(HOUSE_SIZES);
-const HOUSE_BEDROOMS_TENSOR = tf.tensor1d(HOUSE_BEDROOMS);
+const HOUSE_SIZES_TENSOR = tf.tensor2d(HOUSE_SIZES, [HOUSE_SIZES.length, 1]);
+const HOUSE_BEDROOMS_TENSOR = tf.tensor2d(HOUSE_BEDROOMS);
 const HOUSE_PRICES_TENSOR = tf.tensor1d(HOUSE_PRICES);
 
 
@@ -71,7 +71,11 @@ console.log('Normalized Bedroom Sizes:');
 HOUSE_BEDROOMS_TENSOR_NORMALIZED.print();
 
 
-const INPUTS = null;
+const input1 = tf.tensor2d(HOUSE_SIZES_TENSOR_NORMALIZED, [HOUSE_SIZES_TENSOR_NORMALIZED.length, 1]);
+const input2 = tf.tensor2d(HOUSE_BEDROOMS_TENSOR_NORMALIZED, [HOUSE_BEDROOMS_TENSOR_NORMALIZED.length, 1]);
+const axis = 1;
+
+const INPUTS = tf.concat([input1, input2], axis).print();
 
 
 // Now actually create and define model architecture.
