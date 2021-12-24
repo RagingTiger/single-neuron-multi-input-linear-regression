@@ -123,6 +123,8 @@ async function train() {
     shuffle: true
   });
   
+  console.log(results);
+  
   NORMALIZED_INPUT_FEATURES_COMBINED.dispose();
   HOUSE_PRICES_TENSOR.dispose();
   
@@ -135,8 +137,8 @@ async function train() {
 function evaluate() {
     // Predict answer for a single piece of data.
   const INPUTS = tf.tidy(function() {
-    const NEW_SIZE = tf.tensor2d([[1000]]);
-    const NEW_BEDROOMS = tf.tensor2d([[2]]);
+    const NEW_SIZE = tf.tensor2d([[844]]);
+    const NEW_BEDROOMS = tf.tensor2d([[1]]);
 
     const NEW_SIZE_NORMALIZED = normalize(NEW_SIZE, HOUSE_SIZES_MIN, HOUSE_SIZES_MAX);
     const NEW_BEDROOMS_NORMALIZED = normalize(NEW_BEDROOMS, HOUSE_BEDROOMS_MIN, HOUSE_BEDROOMS_MAX);
