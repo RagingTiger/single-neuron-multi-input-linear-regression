@@ -60,11 +60,16 @@ function normalize(tensor) {
 
 
 const HOUSE_SIZES_TENSOR_NORMALIZED = normalize(HOUSE_SIZES_TENSOR);
+HOUSE_SIZES_TENSOR.dispose();
+
 const HOUSE_BEDROOMS_TENSOR_NORMALIZED = normalize(HOUSE_BEDROOMS_TENSOR);
+HOUSE_BEDROOMS_TENSOR.dispose();
+
 console.log('Normalized House Sizes:');
 HOUSE_SIZES_TENSOR_NORMALIZED.print();
 console.log('Normalized Bedroom Sizes:');
 HOUSE_BEDROOMS_TENSOR_NORMALIZED.print();
+
 
 const INPUTS = tf.tensor2d([HOUSE_SIZES_TENSOR_NORMALIZED, HOUSE_BEDROOMS_TENSOR_NORMALIZED.]);
 
