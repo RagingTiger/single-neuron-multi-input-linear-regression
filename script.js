@@ -64,7 +64,7 @@ HOUSE_FEATURES_TENSOR_NORMALIZED.print();
 const model = tf.sequential();
 
 // We will use one dense layer with 1 neuron and an input of 
-// 2 values.
+// 2 values (representing house size and number of rooms)
 model.add(tf.layers.dense({inputShape: [2], units: 1}));
 
 // Choose a learning rate that is suitable for the data we are using.
