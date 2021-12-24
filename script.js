@@ -40,57 +40,35 @@ const HOUSE_PRICES_TENSOR = tf.tensor1d(HOUSE_PRICES);
 function normalize(tensor, min, max) {
   const result = tf.tidy(function() {
     // Find the minimum value contained in the Tensor.
-    const MIN_VALUE = min || tf.min(tensor, 0);
+    const MIN_VALUES = min || tf.min(tensor, 0);
 
     // Find the maximum value contained in the Tensor.
-    const MAX_VALUE = max || tf.max(tensor, 0);
+    const MAX_VALUES = max || tf.max(tensor, 0);
 
     // Now calculate subtract the MIN_VALUE from every value in the Tensor
     // And store the results in a new Tensor.
-    const TENSOR_SUBTRACT_MIN_VALUE = t.sub(MIN_VALUE);
+    const TENSOR_SUBTRACT_MIN_VALUE = tf.sub(tensor, MIN_VALUES);
 
     // Calculate the range size of possible values.
-    const RANGE_SIZE = MAX_VALUE.sub(MIN_VALUE);
+    const RANGE_SIZE = tf.sub(MAX_VALUES, MIN_VALUES);
 
+    const NORMALIZED = tf.div(TENSOR_SUBTRACT_MIN_VALUE, RANGE_SIZE);
     // Return the adjusted values divided by the range size as a new Tensor.
-    return TENSOR_SUBTRACT_MIN_VALUE.div(RANGE_SIZE);
+    return {NORMALIZED, MIN_VALUES, MAX_VALUES};
   });
-
-  return result, MIN_VALUE, MAX_VALUE;
+  return result;
 }
 
 
 // Normalize all input feature arrays and then dispose of the original non normalized Tensors.
-
-const {INPUTS_TENSOR_NORMALIZED, INPUTS_MAX, INPUTS_MIN} = normalize(INPUTS);
-
-const HOUSE_SIZES_MIN = tf.min(HOUSE_SIZES_TENSOR);
-const HOUSE_SIZES_MAX = tf.max(HOUSE_SIZES_TENSOR);
-const HOUSE_SIZES_TENSOR_NORMALIZED = normalize(HOUSE_SIZES_TENSOR, HOUSE_SIZES_MIN, HOUSE_SIZES_MAX);
-HOUSE_SIZES_TENSOR.dispose();
-
-const HOUSE_BEDROOMS_MIN = tf.min(HOUSE_BEDROOMS_TENSOR);
-const HOUSE_BEDROOMS_MAX = tf.max(HOUSE_BEDROOMS_TENSOR);
-const HOUSE_BEDROOMS_TENSOR_NORMALIZED = normalize(HOUSE_BEDROOMS_TENSOR);
-HOUSE_BEDROOMS_TENSOR.dispose();
-
-// Print normalized Tensors to console to view contents.
-console.log('Normalized House Sizes:');
-HOUSE_SIZES_TENSOR_NORMALIZED.print();
-console.log('Normalized Bedroom Sizes:');
-HOUSE_BEDROOMS_TENSOR_NORMALIZED.print();
-
-// Finally merge all the input feature 2D tensors using their 2nd axis (Axis 1 as zero indexed).
-// This will combine the input features such that each item is an array of input features.
-// For example:
-// Feature 1 Tensor: [[1], [2]]
-// Feature 2 Tensor: [[3], [4]]
-// Returned Merged 2D Tensor: [[1,3], [2,4]]
-const AXIS = 1;
-const NORMALIZED_INPUT_FEATURES_COMBINED = tf.concat([HOUSE_SIZES_TENSOR_NORMALIZED, HOUSE_BEDROOMS_TENSOR_NORMALIZED], AXIS);
-HOUSE_SIZES_TENSOR_NORMALIZED.dispose();
-HOUSE_BEDROOMS_TENSOR_NORMALIZED.dispose();
-NORMALIZED_INPUT_FEATURES_COMBINED.print();
+const {NORMALIZED, MIN_VALUES, MAX_VALUES} = normalize(INPUTS);
+console.log('Normalized Values:');
+NORMALIZED.print();
+console.log('Min Values:');
+MIN_VALUES.print();
+console.log('Max Values:');
+MAX_VALUES.print();
+INPUTS_TENSOR.dispose();
 
 
 // Now actually create and define model architecture.
@@ -119,7 +97,7 @@ async function train() {
   // As we have so little training data we use batch size of 1.
   // We also set for the data to be shuffled each time we try 
   // and learn from it.
-  let results = await model.fit(NORMALIZED_INPUT_FEATURES_COMBINED, HOUSE_PRICES_TENSOR, {
+  let results = await model.fit(NORMALIZED, HOUSE_PRICES_TENSOR, {
     epochs: 100,
     validationSplit: 0.15, // TODO - define test/val/train split.
     batchSize: 100, 
@@ -142,9 +120,8 @@ function evaluate() {
     const NEW_SIZE = tf.tensor2d([[844]]);
     const NEW_BEDROOMS = tf.tensor2d([[1]]);
 
-    const NEW_SIZE_NORMALIZED = normalize(NEW_SIZE, HOUSE_SIZES_MIN, HOUSE_SIZES_MAX);
-    const NEW_BEDROOMS_NORMALIZED = normalize(NEW_BEDROOMS, HOUSE_BEDROOMS_MIN, HOUSE_BEDROOMS_MAX);
-
+    const NEW_SIZE_NORMALIZED = normalize(NEW_SIZE, MIN_VALUES, MAX_VALUES);
+  
     return NEW_HOUSE_INPUT_TENSOR = tf.concat([NEW_SIZE_NORMALIZED, NEW_BEDROOMS_NORMALIZED], 1);
   });
 
