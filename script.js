@@ -153,7 +153,15 @@ function evaluate() {
   });
 
   let output = model.predict(INPUTS);
-  output.mul(HOUSE_PRICES_MIN)
+  
+  let range = HOUSE_PRICES_MAX.sub(HOUSE_PRICES_MIN);
+
+  let newOutput = output.mul(range);
+  
+  let finalOut = newOutput.add(HOUSE_PRICES_MIN);
+  
+  finalOut.print();
+  
   INPUTS.dispose();
   output.print();
   output.dispose();
