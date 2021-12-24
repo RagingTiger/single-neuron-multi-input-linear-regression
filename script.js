@@ -21,7 +21,7 @@ if (status) {
 }
 
 // An array of input data
-const houseFeatures = [
+const HOUSE_FEATURES = [
   // Size, Bedrooms
   [720, 1],
   [863, 1],
@@ -45,9 +45,10 @@ const houseFeatures = [
 
 
 // Current listed house prices in dollars given their features above.
-const housePrices = [971000, 875000, 620000, 590000, 710000, 849000, 1995000, 1199000, 1380000, 1398888, 1650000, 1498000, 1782000, 1987888, 1688000, 1850000, 1498000, 5900000];
+const HOUSE_PRICES = [971000, 875000, 620000, 590000, 710000, 849000, 1995000, 1199000, 1380000, 1398888, 1650000, 1498000, 1782000, 1987888, 1688000, 1850000, 1498000, 5900000];
 
-
+const HOUSE_FEATURES_TENSOR = tf.tensor2d(HOUSE_FEATURES);
+const HOUSE_PRICES_TENSOR = tf.tensor1d(HOUSE_PRICES);
 
 // Now actually create and define model architecture.
 const model = tf.sequential();
@@ -73,7 +74,12 @@ async function train() {
   // As we have so little training data we use batch size of 1.
   // We also set for the data to be shuffled each time we try 
   // and learn from it.
-  let results = await model.fit(trainTensors.data, trainTensors.answer, {epochs: 200, batchSize: 1, shuffle: true});
+  let results = await model.fit(trainTensors.data, trainTensors.answer, {
+    epochs: 200,
+    validationSplit: 0.15,
+    batchSize: 1, 
+    shuffle: true
+  });
   
   // Once trained we can evaluate the model.
   evaluate();
