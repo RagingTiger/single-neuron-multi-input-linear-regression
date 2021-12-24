@@ -127,10 +127,16 @@ async function train() {
 
 async function evaluate(stuff) {
   // Predict answer for a single piece of data.
- 
-  
-  const NEW_SIZE = 1000;
-  const NEW_BEDS = 2;
-  const NEW_HOUSE_TENSOR = tf.tensor2d([[NEW_SIZE, NEW_BEDS]]);
-  model.predict(normalize(NEW_HOUSE_TENSOR,)).print();
+  const INPUTS = tf.tidy(function() {
+    const NEW_SIZE = tf.tensor2d([[1000]]);
+    const NEW_BEDROOMS = tf.tensor2d([[2]]);
+
+    const NEW_SIZE_NORMALIZED = normalize(NEW_SIZE, HOUSE_SIZES_MIN, HOUSE_SIZES_MAX);
+    const NEW_BEDROOMS_NORMALIZED = normalize(NEW_BEDROOMS, HOUSE_BEDROOMS_MIN, HOUSE_BEDROOMS_MAX);
+
+    return NEW_HOUSE_INPUT_TENSOR = tf.concat([NEW_SIZE_NORMALIZED, NEW_BEDROOMS_NORMALIZED], 1);
+  });
+
+  model.predict(INPUTS).print();
+  console.log(tf.memory().numTensors);
 }
