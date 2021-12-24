@@ -61,13 +61,13 @@ function normalize(tensor, min, max) {
 
 
 // Normalize all input feature arrays and then dispose of the original non normalized Tensors.
-const {NORMALIZED, MIN_VALUES, MAX_VALUES} = normalize(INPUTS);
+const FEATURE_RESULTS = normalize(INPUTS);
 console.log('Normalized Values:');
-NORMALIZED.print();
+FEATURE_RESULTS.NORMALIZED.print();
 console.log('Min Values:');
-MIN_VALUES.print();
+FEATURE_RESULTS.MIN_VALUES.print();
 console.log('Max Values:');
-MAX_VALUES.print();
+FEATURE_RESULTS.MAX_VALUES.print();
 INPUTS_TENSOR.dispose();
 
 
@@ -97,7 +97,7 @@ async function train() {
   // As we have so little training data we use batch size of 1.
   // We also set for the data to be shuffled each time we try 
   // and learn from it.
-  let results = await model.fit(NORMALIZED, HOUSE_PRICES_TENSOR, {
+  let results = await model.fit(FEATURE_RESULTS.NORMALIZED, HOUSE_PRICES_TENSOR, {
     epochs: 100,
     validationSplit: 0.15, // TODO - define test/val/train split.
     batchSize: 100, 
@@ -106,27 +106,16 @@ async function train() {
   
   console.log("Average error loss: " + Math.sqrt(results.history.loss[results.history.loss.length - 1]));
   console.log("Average validation error loss: " + Math.sqrt(results.history.val_loss[results.history.val_loss.length - 1]));
-  
-  NORMALIZED_INPUT_FEATURES_COMBINED.dispose();
-  HOUSE_PRICES_TENSOR.dispose();
     
   // Once trained we can evaluate the model.
   evaluate();
 }
 
 function evaluate() {
-    // Predict answer for a single piece of data.
-  const INPUTS = tf.tidy(function() {
-    const NEW_SIZE = tf.tensor2d([[844]]);
-    const NEW_BEDROOMS = tf.tensor2d([[1]]);
-
-    const NEW_SIZE_NORMALIZED = normalize(NEW_SIZE, MIN_VALUES, MAX_VALUES);
+  // Predict answer for a single piece of data.
+  let result = normalize(tf.tensor2d([[750, 1]]), FEATURE_RESULTS.MIN_VALUES, FEATURE_RESULTS.MAX_VALUES);
   
-    return NEW_HOUSE_INPUT_TENSOR = tf.concat([NEW_SIZE_NORMALIZED, NEW_BEDROOMS_NORMALIZED], 1);
-  });
-
-  let output = model.predict(INPUTS);
-  INPUTS.dispose();
+  let output = model.predict(result.NORMALIZED);
   output.print();
   output.dispose();  
   
