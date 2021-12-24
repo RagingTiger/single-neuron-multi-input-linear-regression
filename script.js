@@ -118,7 +118,7 @@ async function train() {
   // and learn from it.
   let results = await model.fit(NORMALIZED_INPUT_FEATURES_COMBINED, HOUSE_PRICES_TENSOR, {
     epochs: 100,
-    validationSplit: 0.15,
+    validationSplit: 0.15, // TODO - define test/val/train split.
     batchSize: 1, 
     shuffle: true
   });
@@ -132,9 +132,9 @@ async function train() {
   evaluate();
 }
 
-async function evaluate(stuff) {
+function evaluate() {
     // Predict answer for a single piece of data.
-const INPUTS = tf.tidy(function() {
+  const INPUTS = tf.tidy(function() {
     const NEW_SIZE = tf.tensor2d([[1000]]);
     const NEW_BEDROOMS = tf.tensor2d([[2]]);
 
@@ -149,6 +149,9 @@ const INPUTS = tf.tidy(function() {
   output.print();
   output.dispose();
   
-  // Should show 7 Tensors 
+  
+  // Should show 7 Tensors left in memory incase you want to perform more predictions.
+  // 4 Tensors store the min/max values for each of the 2 input features which you will need to normalize new inputs.
+  // 2 Tensors make up the model itself that was trained (2 input weights and 1 bias value)
   console.log(tf.memory().numTensors);
 }
