@@ -50,12 +50,22 @@ const HOUSE_PRICES = [971000, 875000, 620000, 590000, 710000, 849000, 1995000, 1
 const HOUSE_FEATURES_TENSOR = tf.tensor2d(HOUSE_FEATURES);
 const HOUSE_PRICES_TENSOR = tf.tensor1d(HOUSE_PRICES);
 
+function normalize(tensor) {
+  let offsetValue = tf.sub(tensor, tf.min(tensor));
+  let range = tf.sub(tf.max(tensor), tf.min(tensor));
+  return tf.div(offsetValue, range);
+}
+
+const HOUSE_FEATURES_TENSOR_NORMALIZED = normalize(HOUSE_FEATURES_TENSOR);
+HOUSE_FEATURES_TENSOR_NORMALIZED.print();
+
+
 // Now actually create and define model architecture.
 const model = tf.sequential();
 
 // We will use one dense layer with 1 neuron and an input of 
-// a single value.
-model.add(tf.layers.dense({inputShape: [1], units: 1}));
+// 2 values.
+model.add(tf.layers.dense({inputShape: [2], units: 1}));
 
 // Choose a learning rate that is suitable for the data we are using.
 const LEARNING_RATE = 0.0001;
@@ -74,7 +84,7 @@ async function train() {
   // As we have so little training data we use batch size of 1.
   // We also set for the data to be shuffled each time we try 
   // and learn from it.
-  let results = await model.fit(trainTensors.data, trainTensors.answer, {
+  let results = await model.fit(HOUSE_FEATURES_TENSOR, HOUSE_PRICES_TENSOR, {
     epochs: 200,
     validationSplit: 0.15,
     batchSize: 1, 
