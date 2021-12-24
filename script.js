@@ -52,9 +52,9 @@ function normalize(tensor, min, max) {
     // Calculate the range size of possible values.
     const RANGE_SIZE = tf.sub(MAX_VALUES, MIN_VALUES);
 
-    const NORMALIZED = tf.div(TENSOR_SUBTRACT_MIN_VALUE, RANGE_SIZE);
+    const NORMALIZED_VALUES = tf.div(TENSOR_SUBTRACT_MIN_VALUE, RANGE_SIZE);
     // Return the adjusted values divided by the range size as a new Tensor.
-    return {NORMALIZED, MIN_VALUES, MAX_VALUES};
+    return {NORMALIZED_VALUES, MIN_VALUES, MAX_VALUES};
   });
   return result;
 }
@@ -63,7 +63,7 @@ function normalize(tensor, min, max) {
 // Normalize all input feature arrays and then dispose of the original non normalized Tensors.
 const FEATURE_RESULTS = normalize(INPUTS);
 console.log('Normalized Values:');
-FEATURE_RESULTS.NORMALIZED.print();
+FEATURE_RESULTS.NORMALIZED_VALUES.print();
 console.log('Min Values:');
 FEATURE_RESULTS.MIN_VALUES.print();
 console.log('Max Values:');
@@ -97,12 +97,15 @@ async function train() {
   // As we have so little training data we use batch size of 1.
   // We also set for the data to be shuffled each time we try 
   // and learn from it.
-  let results = await model.fit(FEATURE_RESULTS.NORMALIZED, HOUSE_PRICES_TENSOR, {
+  let results = await model.fit(FEATURE_RESULTS.NORMALIZED_VALUES, HOUSE_PRICES_TENSOR, {
     epochs: 100,
     validationSplit: 0.15, // TODO - define test/val/train split.
     batchSize: 100, 
     shuffle: true
   });
+  
+  HOUSE_PRICES_TENSOR.dispose();
+  FEATURE_RESULTS.NORMALIZED_VALUES.dispose();
   
   console.log("Average error loss: " + Math.sqrt(results.history.loss[results.history.loss.length - 1]));
   console.log("Average validation error loss: " + Math.sqrt(results.history.val_loss[results.history.val_loss.length - 1]));
@@ -113,14 +116,20 @@ async function train() {
 
 function evaluate() {
   // Predict answer for a single piece of data.
-  let result = normalize(tf.tensor2d([[750, 1]]), FEATURE_RESULTS.MIN_VALUES, FEATURE_RESULTS.MAX_VALUES);
-  
-  let output = model.predict(result.NORMALIZED);
-  output.print();
-  output.dispose();  
+  tf.tidy(function() {
+    let newInput = normalize(tf.tensor2d([[750, 1]]), FEATURE_RESULTS.MIN_VALUES, FEATURE_RESULTS.MAX_VALUES);
+
+    let output = model.predict(newInput.NORMALIZED_VALUES);
+    output.print();
+  });
   
   // Should show 7 Tensors left in memory incase you want to perform more predictions.
   // 4 Tensors store the min/max values for each of the 2 input features which you will need to normalize new inputs.
   // 3 Tensors make up the model itself that was trained.
+  
+  FEATURE_RESULTS.MIN_VALUES.dispose();
+  FEATURE_RESULTS.MAX_VALUES.dispose();
+  model.dispose();
+  
   console.log(tf.memory().numTensors);
 }
