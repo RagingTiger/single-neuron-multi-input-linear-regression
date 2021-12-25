@@ -15,7 +15,7 @@
  * =============================================================================
  */
 
-import {TRAINING_DATA} from 'https://storage.googleapis.com/jmstore/TensorFlowJS/EdX/TrainingData/refined_training_features.js';
+import {TRAINING_DATA} from 'https://storage.googleapis.com/jmstore/TensorFlowJS/EdX/TrainingData/training.js';
 
 // Input feature pairs (House size, Number of Bedrooms)
 const INPUTS = TRAINING_DATA.inputs;
@@ -79,7 +79,7 @@ train();
 
 async function train() {
   // Choose a learning rate that is suitable for the data we are using.
-  const LEARNING_RATE = 0.01;
+  const LEARNING_RATE = 0.0005;
   
   // Compile the model with the defined learning rate and specify
   // our loss function to use.
@@ -93,9 +93,9 @@ async function train() {
   // We also set for the data to be shuffled each time we try 
   // and learn from it.
   let results = await model.fit(FEATURE_RESULTS.NORMALIZED_VALUES, OUTPUTS_TENSOR, {
-    epochs: 50,
+    epochs: 100,
     validationSplit: 0.15, // TODO - define test/val/train split.
-    batchSize: 2, 
+    batchSize: 20, 
     shuffle: true
   });
   
