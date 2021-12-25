@@ -70,7 +70,11 @@ const model = tf.sequential();
 
 // We will use one dense layer with 1 neuron (units) and an input of 
 // 2 input feaature values (representing house size and number of rooms)
-model.add(tf.layers.dense({inputShape: [2], units: 1}));
+model.add(tf.layers.dense({inputShape: [2], units: 7}));
+model.add(tf.layers.dense({units: 5}));
+model.add(tf.layers.dense({units: 3}));
+model.add(tf.layers.dense({units: 2}));
+model.add(tf.layers.dense({units: 1}));
 
 model.summary();
 
@@ -79,7 +83,7 @@ train();
 
 async function train() {
   // Choose a learning rate that is suitable for the data we are using.
-  const LEARNING_RATE = 0.0005;
+  const LEARNING_RATE = 0.0000001;
   
   // Compile the model with the defined learning rate and specify
   // our loss function to use.
