@@ -93,9 +93,9 @@ async function train() {
   // We also set for the data to be shuffled each time we try 
   // and learn from it.
   let results = await model.fit(FEATURE_RESULTS.NORMALIZED_VALUES, OUTPUTS_TENSOR, {
-    epochs: 200,
+    epochs: 50,
     validationSplit: 0.15, // TODO - define test/val/train split.
-    batchSize: 20, 
+    batchSize: 2, 
     shuffle: true
   });
   
@@ -113,7 +113,7 @@ async function train() {
 function evaluate() {
   // Predict answer for a single piece of data.
   tf.tidy(function() {
-    let newInput = normalize(tf.tensor2d([[7, 750]]), FEATURE_RESULTS.MIN_VALUES, FEATURE_RESULTS.MAX_VALUES);
+    let newInput = normalize(tf.tensor2d([[750, 1]]), FEATURE_RESULTS.MIN_VALUES, FEATURE_RESULTS.MAX_VALUES);
 
     let output = model.predict(newInput.NORMALIZED_VALUES);
     output.print();
