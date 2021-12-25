@@ -15,7 +15,7 @@
  * =============================================================================
  */
 
-import {TRAINING_DATA} from 'https://storage.googleapis.com/jmstore/TensorFlowJS/EdX/TrainingData/test.js';
+import {TRAINING_DATA} from 'https://storage.googleapis.com/jmstore/TensorFlowJS/EdX/TrainingData/test3.js';
 
 // Input feature pairs (House size, Number of Bedrooms)
 const INPUTS = TRAINING_DATA.inputs;
@@ -70,7 +70,7 @@ const model = tf.sequential();
 
 // We will use one dense layer with 1 neuron (units) and an input of 
 // 2 input feaature values (representing house size and number of rooms)
-model.add(tf.layers.dense({inputShape: [5], units: 1}));
+model.add(tf.layers.dense({inputShape: [4], units: 1}));
 
 model.summary();
 
@@ -95,7 +95,7 @@ async function train() {
   let results = await model.fit(FEATURE_RESULTS.NORMALIZED_VALUES, OUTPUTS_TENSOR, {
     epochs: 100,
     validationSplit: 0.15, // TODO - define test/val/train split.
-    batchSize: 20, 
+    batchSize: 100, 
     shuffle: true
   });
   
