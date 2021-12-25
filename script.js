@@ -15,7 +15,7 @@
  * =============================================================================
  */
 
-import {TRAINING_DATA} from 'https://storage.googleapis.com/jmstore/TensorFlowJS/EdX/TrainingData/test3.js';
+import {TRAINING_DATA} from 'https://storage.googleapis.com/jmstore/TensorFlowJS/EdX/TrainingData/real-estate-data.js';
 
 // Input feature pairs (House size, Number of Bedrooms)
 const INPUTS = TRAINING_DATA.inputs;
@@ -70,7 +70,7 @@ const model = tf.sequential();
 
 // We will use one dense layer with 1 neuron (units) and an input of 
 // 2 input feaature values (representing house size and number of rooms)
-model.add(tf.layers.dense({inputShape: [4], units: 1}));
+model.add(tf.layers.dense({inputShape: [2], units: 1}));
 
 model.summary();
 
@@ -79,7 +79,7 @@ train();
 
 async function train() {
   // Choose a learning rate that is suitable for the data we are using.
-  const LEARNING_RATE = 0.001;
+  const LEARNING_RATE = 0.01;
   
   // Compile the model with the defined learning rate and specify
   // our loss function to use.
@@ -88,15 +88,12 @@ async function train() {
     loss: 'meanSquaredError'
   });
 
-  // Finally do the training itself over 500 iterations of the data.
-  // As we have so little training data we use batch size of 1.
-  // We also set for the data to be shuffled each time we try 
-  // and learn from it.
+  // Finally do the training itself 
   let results = await model.fit(FEATURE_RESULTS.NORMALIZED_VALUES, OUTPUTS_TENSOR, {
-    epochs: 100,
-    validationSplit: 0.15, // TODO - define test/val/train split.
-    batchSize: 100, 
-    shuffle: true
+    validationSplit: 0.15, // Take aside 15% of the data to use for validation testing.
+    shuffle: true,         // Ensure data is shuffled before using in case it was in an order
+    batchSize: 500,        // As we have a lot of training data, batch size is set to 500.
+    epochs: 100            // Go over the data 100 times!
   });
   
   OUTPUTS_TENSOR.dispose();
