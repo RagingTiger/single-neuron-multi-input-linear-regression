@@ -15,7 +15,7 @@
  * =============================================================================
  */
 
-import {TRAINING_DATA} from 'https://storage.googleapis.com/jmstore/TensorFlowJS/EdX/TrainingData/trainingdata_refined.js';
+import {TRAINING_DATA} from 'https://storage.googleapis.com/jmstore/TensorFlowJS/EdX/TrainingData/refined_training_features.js';
 
 // Input feature pairs (House size, Number of Bedrooms)
 const INPUTS = TRAINING_DATA.inputs;
