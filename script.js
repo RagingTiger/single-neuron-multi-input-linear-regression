@@ -31,7 +31,7 @@ const OUTPUTS_TENSOR = tf.tensor1d(OUTPUTS);
 
 
 // Function to take a Tensor and normalize values
-// based on all values contained in that Tensor.
+// with respect to each column of values contained in that Tensor.
 function normalize(tensor, min, max) {
   const result = tf.tidy(function() {
     // Find the minimum value contained in the Tensor.
