@@ -47,9 +47,10 @@ function normalize(tensor, min, max) {
     // Calculate the range size of possible values.
     const RANGE_SIZE = tf.sub(MAX_VALUES, MIN_VALUES);
 
+    // Calculate the adjusted values divided by the range size as a new Tensor.
     const NORMALIZED_VALUES = tf.div(TENSOR_SUBTRACT_MIN_VALUE, RANGE_SIZE);
     
-    // Return the adjusted values divided by the range size as a new Tensor.
+    // Return the important tensors.
     return {NORMALIZED_VALUES, MIN_VALUES, MAX_VALUES};
   });
   return result;
