@@ -29,6 +29,7 @@ const INPUTS_TENSOR = tf.tensor2d(INPUTS);
 // Output can stay 1 dimensional.
 const OUTPUTS_TENSOR = tf.tensor1d(OUTPUTS);
 
+
 // Function to take a Tensor and normalize values
 // based on all values contained in that Tensor.
 function normalize(tensor, min, max) {
