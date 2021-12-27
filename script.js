@@ -61,10 +61,13 @@ function normalize(tensor, min, max) {
 const FEATURE_RESULTS = normalize(INPUTS);
 console.log('Normalized Values:');
 FEATURE_RESULTS.NORMALIZED_VALUES.print();
+
 console.log('Min Values:');
 FEATURE_RESULTS.MIN_VALUES.print();
+
 console.log('Max Values:');
 FEATURE_RESULTS.MAX_VALUES.print();
+
 INPUTS_TENSOR.dispose();
 
 
