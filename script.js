@@ -23,7 +23,7 @@ const INPUTS = TRAINING_DATA.inputs;
 // Current listed house prices in dollars given their features above (target output values you want to predict).
 const OUTPUTS = TRAINING_DATA.outputs;
 
-// Ingest 1D input feature arrays as 2D tensors so that you can combine them later.
+// Input feature Array of Arrays needs 2D tensor to store.
 const INPUTS_TENSOR = tf.tensor2d(INPUTS);
 
 // Output can stay 1 dimensional.
