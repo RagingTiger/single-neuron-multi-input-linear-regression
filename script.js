@@ -75,7 +75,7 @@ INPUTS_TENSOR.dispose();
 const model = tf.sequential();
 
 // We will use one dense layer with 1 neuron (units) and an input of 
-// 2 input feaature values (representing house size and number of rooms)
+// 2 input feaature values (representing house size and number of rooms).
 model.add(tf.layers.dense({inputShape: [2], units: 1}));
 
 model.summary();
@@ -98,8 +98,8 @@ async function train() {
   let results = await model.fit(FEATURE_RESULTS.NORMALIZED_VALUES, OUTPUTS_TENSOR, {
     validationSplit: 0.15, // Take aside 15% of the data to use for validation testing.
     shuffle: true,         // Ensure data is shuffled before using in case it was in an order
-    batchSize: 64,        // As we have a lot of training data, batch size is set to 500.
-    epochs: 10            // Go over the data 100 times!
+    batchSize: 64,         // As we have a lot of training data, batch size is set to 500.
+    epochs: 10             // Go over the data 100 times!
   });
   
   OUTPUTS_TENSOR.dispose();
