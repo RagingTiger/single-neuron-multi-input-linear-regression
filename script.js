@@ -123,7 +123,7 @@ function evaluate() {
   });
   
   // Should show 7 Tensors left in memory incase you want to perform more predictions.
-  // 4 Tensors store the min/max values for each of the 2 input features which you will need to normalize new inputs.
+  // 2 Tensors store the min/max values for each of the 2 input features which you will need to normalize new inputs.
   // 3 Tensors make up the model itself that was trained.
   
   FEATURE_RESULTS.MIN_VALUES.dispose();
