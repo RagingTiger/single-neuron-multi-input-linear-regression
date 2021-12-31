@@ -24,10 +24,10 @@ const INPUTS = TRAINING_DATA.inputs;
 const OUTPUTS = TRAINING_DATA.outputs;
 
 // Input feature Array of Arrays needs 2D tensor to store.
-const INPUTS_TENSOR = tf.tensor1d(OUTPUTS);
+const INPUTS_TENSOR = tf.tensor2d(INPUTS);
 
 // Output can stay 1 dimensional.
-const OUTPUTS_TENSOR = tf.tensor2d(INPUTS);
+const OUTPUTS_TENSOR = tf.tensor1d(OUTPUTS);
 
 
 // Function to take a Tensor and normalize values
@@ -76,7 +76,7 @@ const model = tf.sequential();
 
 // We will use one dense layer with 1 neuron (units) and an input of 
 // 2 input feaature values (representing house size and number of rooms).
-model.add(tf.layers.dense({inputShape: [1], units: 2}));
+model.add(tf.layers.dense({inputShape: [2], units: 1}));
 
 model.summary();
 
