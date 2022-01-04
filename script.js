@@ -122,12 +122,6 @@ function evaluate() {
     output.print();
   });
   
-  // Should show 5 Tensors left in memory incase you want to perform more predictions.
-  // 2 Tensors store the min/max values for each of the 2 input features which you will need to normalize new inputs.
-  // 3 Tensors make up the model itself that was trained (3 trainable params?).
-  
-  console.log(tf.memory().numTensors); // Expected 5 but got 6.
-  
   FEATURE_RESULTS.MIN_VALUES.dispose();
   FEATURE_RESULTS.MAX_VALUES.dispose();
   model.dispose();
