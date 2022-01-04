@@ -97,7 +97,7 @@ async function train() {
   // Finally do the training itself 
   let results = await model.fit(FEATURE_RESULTS.NORMALIZED_VALUES, OUTPUTS_TENSOR, {
     validationSplit: 0.15, // Take aside 15% of the data to use for validation testing.
-    shuffle: true,         // Ensure data is shuffled before using in case it was in an order
+    shuffle: true,         // Ensure data is shuffled in case it was in an order
     batchSize: 64,         // As we have a lot of training data, batch size is set to 64.
     epochs: 10             // Go over the data 10 times!
   });
@@ -126,5 +126,5 @@ function evaluate() {
   FEATURE_RESULTS.MAX_VALUES.dispose();
   model.dispose();
   
-  console.log(tf.memory().numTensors); // Expecting 0 but getting 2!
+  console.log(tf.memory().numTensors); // Expecting 0.
 }
