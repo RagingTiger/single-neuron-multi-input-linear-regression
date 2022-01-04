@@ -23,6 +23,10 @@ const INPUTS = TRAINING_DATA.inputs;
 // Current listed house prices in dollars given their features above (target output values you want to predict).
 const OUTPUTS = TRAINING_DATA.outputs;
 
+// Shuffle the two arrays to remove any order, but do so in the same way so 
+// inputs still match outputs indexes.
+tf.util.shuffleCombo(INPUTS, OUTPUTS);
+
 // Input feature Array of Arrays needs 2D tensor to store.
 const INPUTS_TENSOR = tf.tensor2d(INPUTS);
 
@@ -97,7 +101,7 @@ async function train() {
   // Finally do the training itself 
   let results = await model.fit(FEATURE_RESULTS.NORMALIZED_VALUES, OUTPUTS_TENSOR, {
     validationSplit: 0.15, // Take aside 15% of the data to use for validation testing.
-    shuffle: true,         // Ensure data is shuffled in case it was in an order
+    shuffle: true,         // Ensure data is shuffled again before using each epoch.
     batchSize: 64,         // As we have a lot of training data, batch size is set to 64.
     epochs: 10             // Go over the data 10 times!
   });
