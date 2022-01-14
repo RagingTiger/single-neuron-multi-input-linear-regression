@@ -130,5 +130,5 @@ function evaluate() {
   FEATURE_RESULTS.MAX_VALUES.dispose();
   model.dispose();
   
-  console.log(tf.memory().numTensors); // Expecting 0.
+  console.log(tf.memory().numTensors);
 }
